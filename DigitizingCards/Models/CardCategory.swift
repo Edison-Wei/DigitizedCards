@@ -7,18 +7,30 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
 
 @Model
-class Category {
-    var id: UUID
+class CardCategory {
     var title: String
     var isSystem: Bool
     var colorHex: String
+    var userOrder: Int
     
-    init(title: String, isSystem: Bool = false, colorHex: String = "#007AFF") {
-        self.id = UUID()
+    var identifier: String
+    
+    @Relationship(deleteRule: .nullify, inverse: \ScannedCard.category)
+    var cards: [ScannedCard]?
+    
+    init(title: String, isSystem: Bool = false, colorHex: String = "#007AFF", userOrder: Int = 0) {
         self.title = title
         self.isSystem = isSystem
         self.colorHex = colorHex
+        self.cards = []
+        self.userOrder = userOrder
+        self.identifier = UUID().uuidString
+    }
+    
+    var isEmpty: Bool {
+        cards?.isEmpty ?? true
     }
 }
