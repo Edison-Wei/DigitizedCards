@@ -14,6 +14,9 @@ struct DigitizingCardsApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: LibraryCard.self)
+        .modelContainer(for: [
+            ScannedCard.self,
+            CardCategory.self
+        ])
     }
 }
