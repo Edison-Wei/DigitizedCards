@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 import CoreTransferable
-
+ 
 struct ContentView: View {
     @Query(sort: \ScannedCard.userOrder) private var cards: [ScannedCard]
     @Query(sort: \CardCategory.userOrder) private var categories: [CardCategory]
@@ -19,6 +19,8 @@ struct ContentView: View {
     @State private var isShowingAllCardsList = false
     
     @State private var draggedCategory: CardCategory?
+    
+    @State private var lastTargetCategoryID: String?
     
     var body: some View {
         NavigationStack {
@@ -34,14 +36,13 @@ struct ContentView: View {
                 
                 ScrollView {
                     VStack(spacing: -40) {
-                        ForEach(categories) { category in
-                            categoryRow(category)
+                        ForEach(Array(categories.enumerated()), id: \.element.id) { index, category in
+                            categoryRow(category, at: index)
                         }
-                        .onMove(perform: onMoveCategory)
                     }
                     .padding()
                     .padding(.top, 10)
-                    .animation(.default, value: categories)
+                    .animation(.spring(response: 0.35, dampingFraction: 0.8), value: categories)
                 }
                 .navigationTitle("Digitized Cards")
                 .toolbar {
@@ -79,28 +80,6 @@ struct ContentView: View {
         }
     }
     
-    private func moveCategory(dragged: CardCategory, target: CardCategory) {
-        
-        guard
-            let fromIndex = categories.firstIndex(where: { $0.id == dragged.id }),
-            let toIndex = categories.firstIndex(where: { $0.id == target.id })
-        else {
-            return
-        }
-        
-        var reordered = categories
-        reordered.move(
-            fromOffsets: IndexSet(integer: fromIndex),
-            toOffset: toIndex > fromIndex ? toIndex + 1 : toIndex
-        )
-        
-        for (index, category) in reordered.enumerated() {
-            category.userOrder = index
-        }
-        
-        try? modelContext.save()
-    }
-    
     private func onMoveCategory(from source: IndexSet, to destination: Int) {
         var updatedCategories = categories
         updatedCategories.move(fromOffsets: source, toOffset: destination)
@@ -109,7 +88,11 @@ struct ContentView: View {
             category.userOrder = index
         }
         
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save category order:", error)
+        }
     }
     
     private func seedDefaultCategories() {
@@ -126,7 +109,12 @@ struct ContentView: View {
         for category in defaults {
             modelContext.insert(category)
         }
-        try? modelContext.save()
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to seed default categories:", error)
+        }
     }
     
     private func moveCategory(draggedID: String, target: CardCategory) {
@@ -142,13 +130,11 @@ struct ContentView: View {
             for (index, category) in updatedCategories.enumerated() {
                 category.userOrder = index
             }
-            
-            try? modelContext.save()
         }
     }
         
     @ViewBuilder
-    private func categoryRow(_ category: CardCategory) -> some View {
+    private func categoryRow(_ category: CardCategory, at index: Int) -> some View {
         NavigationLink {
             CategoryDetailListView(category: category)
         } label: {
@@ -156,29 +142,40 @@ struct ContentView: View {
         }
         .draggable(category.identifier) {
             CategoryCardView(category: category)
+                .frame(width: 320)
                 .onAppear { draggedCategory = category }
         }
         .dropDestination(for: String.self) { items, location in
+            lastTargetCategoryID = nil
             draggedCategory = nil
+            
+            do {
+                try modelContext.save()
+            } catch {
+                print("Failed to save category order:", error)
+            }
+            
             return true
         } isTargeted: { isTargeted in
             if isTargeted,
                let activeDragged = draggedCategory,
-               activeDragged != category {
+               activeDragged != category,
+               lastTargetCategoryID != category.identifier {
+                lastTargetCategoryID = category.identifier
                 
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                     moveCategory(draggedID: activeDragged.identifier, target: category)
                 }
             }
         }
-        .zIndex(Double(categories.count + (categories.firstIndex(of: category) ?? 0)))
+        .zIndex(Double(categories.count + index))
     }
 }
-
+ 
 struct CategoryCardView: View {
     let category: CardCategory
     var cardCount: Int {
-        category.cards?.count ?? 0
+        category.cards.count
     }
     
     var body: some View {
@@ -215,7 +212,7 @@ struct CategoryCardView: View {
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
     }
 }
-
+ 
 #Preview {
     ContentView()
         .modelContainer(PreviewContainer.shared)

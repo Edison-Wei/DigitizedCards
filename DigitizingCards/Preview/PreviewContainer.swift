@@ -26,8 +26,7 @@ struct PreviewContainer {
             let card = ScannedCard(
                 title: "Starbucks",
                 category: category,
-                barcodeNumber: "123456789",
-                barcodeFormat: "QR",
+                barcode: BarcodeData(value: "1241414", format: BarcodeFormat.qr)!,
                 userOrder: 0
             )
             
@@ -39,8 +38,7 @@ struct PreviewContainer {
             let card_1 = ScannedCard(
                 title: "Vancouver Public Library",
                 category: category_1,
-                barcodeNumber: "123456789",
-                barcodeFormat: "QR",
+                barcode: BarcodeData(value: "123456789", format: BarcodeFormat.code128)!,
                 userOrder: 1
             )
             

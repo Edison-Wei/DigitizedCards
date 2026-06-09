@@ -16,10 +16,10 @@ class CardCategory {
     var colorHex: String
     var userOrder: Int
     
-    var identifier: String
+    private(set) var identifier: String
     
     @Relationship(deleteRule: .nullify, inverse: \ScannedCard.category)
-    var cards: [ScannedCard]?
+    var cards: [ScannedCard] = []
     
     init(title: String, isSystem: Bool = false, colorHex: String = "#007AFF", userOrder: Int = 0) {
         self.title = title
@@ -31,6 +31,6 @@ class CardCategory {
     }
     
     var isEmpty: Bool {
-        cards?.isEmpty ?? true
+        cards.isEmpty
     }
 }

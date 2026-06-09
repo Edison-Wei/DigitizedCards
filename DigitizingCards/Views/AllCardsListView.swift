@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+ 
 struct AllCardsListView: View {
     @Query(sort: \ScannedCard.userOrder) private var allCards: [ScannedCard]
     @Query(sort: \CardCategory.title) private var categories: [CardCategory]
@@ -27,10 +27,10 @@ struct AllCardsListView: View {
         allCards.filter { card in
             let matchesSearch = searchText.isEmpty ||
             card.title.localizedStandardContains(searchText) ||
-            card.barcodeNumber.localizedStandardContains(searchText)
+            card.barcode.value.localizedStandardContains(searchText)
             
             let matchesCategory = !showFilterBar || selectedFilterCategory == nil ||
-            card.category?.id == selectedFilterCategory?.id
+            card.category?.identifier == selectedFilterCategory?.identifier
             
             return matchesSearch && matchesCategory
         }
@@ -46,7 +46,7 @@ struct AllCardsListView: View {
                         }
                         
                         ForEach(categories) { category in
-                            ToggleChip(title: category.title, isSelected: selectedFilterCategory?.id == category.id, colorHex: category.colorHex) {
+                            ToggleChip(title: category.title, isSelected: selectedFilterCategory?.identifier == category.identifier, colorHex: category.colorHex) {
                                 selectedFilterCategory = category
                             }
                         }
@@ -64,6 +64,7 @@ struct AllCardsListView: View {
                             Capsule()
                                 .fill(Color(hex: card.category?.colorHex ?? "#8E8E93"))
                                 .frame(width: 5, height: 35)
+                                .padding(.trailing, 8)
                             
                             VStack(alignment: .leading) {
                                 Text(card.title)
@@ -114,22 +115,49 @@ struct AllCardsListView: View {
     private func moveCards(from source: IndexSet, to destination: Int) {
         var updatedList = allCards
         
-        updatedList.move(fromOffsets: source, toOffset: destination)
+        let sourceIndicesInAll = source.map { filteredIndex -> Int in
+            let card = filteredCards[filteredIndex]
+            return updatedList.firstIndex(where: { $0.id == card.id }) ?? filteredIndex
+        }
+        
+        let destinationCard: ScannedCard?
+        if destination < filteredCards.count {
+            destinationCard = filteredCards[destination]
+        } else {
+            destinationCard = filteredCards.last
+        }
+        let destinationIndexInAll = destinationCard.flatMap { d in
+            updatedList.firstIndex(where: { $0.id == d.id })
+        } ?? updatedList.count
+        
+        updatedList.move(
+            fromOffsets: IndexSet(sourceIndicesInAll),
+            toOffset: destinationIndexInAll
+        )
         
         for (index, card) in updatedList.enumerated() {
             card.userOrder = index
         }
         
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save card order:", error)
+        }
     }
     
     private func deleteCards(offsets: IndexSet) {
         for index in offsets {
             modelContext.delete(filteredCards[index])
         }
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to delete card:", error)
+        }
     }
 }
-
+ 
 struct ToggleChip: View {
     let title: String
     let isSelected: Bool

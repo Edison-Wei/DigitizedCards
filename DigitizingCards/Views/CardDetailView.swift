@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-
+ 
 struct CardDetailView: View {
     let card: ScannedCard
-    let generator = BardcodeGenerator()
+    let generator = BarcodeGenerator.shared
     
     @State private var originalBrightness: CGFloat?
     
@@ -30,21 +30,24 @@ struct CardDetailView: View {
                     .font(.largeTitle)
                     .bold()
                     .multilineTextAlignment(.center)
-
-                if let barcode = generator.generate(from: card.barcodeNumber) {
-                    Image(uiImage: barcode)
-                        .resizable()
-                        .interpolation(.none)
-                        .scaledToFit()
-                        .frame(height: 150)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+ 
+                if let barcode = generator.generate(from: card.barcode.value, format: card.barcode.format) {
+                    BarcodeImageView(
+                        image: barcode,
+                        format: card.barcode.format
+                    )
+                } else {
+                    ContentUnavailableView("Unable to Generate Barcode", systemImage: "barcode.viewfinder")
                 }
-
-                Text(card.barcodeNumber)
+ 
+                Text(card.barcode.value)
                     .font(.system(.body, design: .monospaced))
+                    .kerning(2)
+                    .foregroundStyle(.secondary)
+                
+                Text(card.barcode.format.displayName)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
                 
                 Spacer()
             }
@@ -78,8 +81,8 @@ struct CardDetailView: View {
         }
     }
 }
-
-
+ 
+ 
 struct ScreenReaderView: UIViewRepresentable {
     var onScreenDetected: (UIScreen) -> Void
     
@@ -94,4 +97,37 @@ struct ScreenReaderView: UIViewRepresentable {
         return view
     }
     func updateUIView(_ uiView: UIView, context: Context) {}
+}
+ 
+struct BarcodeImageView: View {
+ 
+    let image: UIImage
+    let format: BarcodeFormat
+ 
+    var body: some View {
+ 
+        Group {
+ 
+            if format.type == .twoDimensional {
+ 
+                Image(uiImage: image)
+                    .resizable()
+                    .interpolation(.none)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: 250)
+ 
+            } else {
+ 
+                Image(uiImage: image)
+                    .resizable()
+                    .interpolation(.none)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 140)
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+    }
 }

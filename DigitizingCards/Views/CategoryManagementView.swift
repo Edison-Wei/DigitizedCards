@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+ 
 struct CategoryManagementView: View {
     @Query(sort: \CardCategory.title) private var categories: [CardCategory]
     @Environment(\.modelContext) private var modelContext
@@ -43,6 +43,7 @@ struct CategoryManagementView: View {
                     }
                     .onTapGesture {
                         categoryToEdit = category
+                        if category.isSystem { return }
                         isShowingForm = true
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -52,7 +53,9 @@ struct CategoryManagementView: View {
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
-                            
+                        }
+                        
+                        if !category.isSystem {
                             Button {
                                 categoryToEdit = category
                                 isShowingForm = true

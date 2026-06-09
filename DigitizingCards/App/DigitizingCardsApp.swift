@@ -16,7 +16,8 @@ struct DigitizingCardsApp: App {
         }
         .modelContainer(for: [
             ScannedCard.self,
-            CardCategory.self
+            CardCategory.self,
+            BarcodeData.self
         ])
     }
 }

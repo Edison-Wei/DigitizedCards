@@ -7,9 +7,11 @@
 
 import SwiftUI
 import VisionKit
-
+import Vision
+ 
 struct BarcodeScannerView: UIViewControllerRepresentable {
-    @Binding var scannedCode: String
+    @Binding var scannedResult: BarcodeData?
+    @Binding var scanError: String?
     @Environment(\.dismiss) var dismiss
     
     func makeUIViewController(context: Context) -> DataScannerViewController {
@@ -37,13 +39,63 @@ struct BarcodeScannerView: UIViewControllerRepresentable {
         }
         
         func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-            switch item {
-            case .barcode(let code):
-                parent.scannedCode = code.payloadStringValue ?? ""
-                parent.dismiss()
-            default: break
+            guard case .barcode(let barcode) = item,
+                let value = barcode.payloadStringValue,
+                let format = mapBarcodeSymbology(barcode.observation.symbology)
+            else {
+                return
+            }
+            
+            MainActor.assumeIsolated {
+                if let barcodeData = BarcodeData(value: value, format: format) {
+                    parent.scannedResult = barcodeData
+                    parent.dismiss()
+                } else {
+                    parent.scanError = "The scanned barcode (\(format.rawValue.uppercased())) has an unexpected format. Try scanning again or enter the number manually."
+                    parent.dismiss()
+                }
+            }
+        }
+        
+        private func mapBarcodeSymbology(_ symbology: VNBarcodeSymbology) -> BarcodeFormat? {
+            switch symbology {
+ 
+            case .qr:
+                return .qr
+ 
+            case .aztec:
+                return .aztec
+ 
+            case .dataMatrix:
+                return .dataMatrix
+ 
+            case .pdf417:
+                return .pdf417
+ 
+            case .code128:
+                return .code128
+ 
+            case .code39:
+                return .code39
+ 
+            case .code93:
+                return .code93
+ 
+            case .ean8:
+                return .ean8
+ 
+            case .ean13:
+                return .ean13
+ 
+            case .upce:
+                return .upce
+ 
+            case .i2of5, .itf14:
+                return .itf14
+ 
+            default:
+                return nil
             }
         }
     }
 }
-

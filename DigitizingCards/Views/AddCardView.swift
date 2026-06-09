@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+ 
 struct AddCardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
@@ -16,9 +16,15 @@ struct AddCardView: View {
     @Query(sort: \ScannedCard.userOrder) private var allCards: [ScannedCard]
     
     @State private var cardName = ""
-    @State private var barcodeNumber = ""
     @State private var isShowingScanner = false
-    @State private var barcodeFormat = ""
+    
+    @State private var scannedValue: String = ""
+    @State private var scannedFormat: BarcodeFormat? = nil
+    @State private var scanError: String? = nil
+    
+    @State private var manualBarcodeNumber = ""
+    @State private var selectedFormat: BarcodeFormat = .code128
+    
     @State private var selectedCategory: CardCategory?
     
     @State private var isShowingNewCategoryAlert = false
@@ -34,13 +40,29 @@ struct AddCardView: View {
                         TextField("Card Name (e.g. Vancouver Public Library)", text: $cardName)
                         
                         HStack {
-                            TextField("Account Number", text: $barcodeNumber)
+                            TextField("Account Number", text: $manualBarcodeNumber)
+                                .onChange(of: scannedValue) { _, newValue in
+                                    guard !newValue.isEmpty else { return }
+                                    manualBarcodeNumber = newValue
+                                    if let fmt = scannedFormat {
+                                        selectedFormat = fmt
+                                    }
+                                }
                             
                             Button {
                                 isShowingScanner = true
                             } label: {
                                 Image(systemName: "barcode.viewfinder")
                                     .foregroundStyle(.blue)
+                            }
+                        }
+                        Picker("Barcode Format", selection: $selectedFormat) {
+                            ForEach([
+                                BarcodeFormat.code128, .code39, .code93,
+                                .qr, .aztec, .dataMatrix, .pdf417,
+                                .ean13, .ean8, .upce, .itf14
+                            ], id: \.self) { format in
+                                Text(format.displayName).tag(format)
                             }
                         }
                     }
@@ -72,22 +94,27 @@ struct AddCardView: View {
                         Button("Save") {
                             saveCard()
                         }
-                        .disabled(cardName.isEmpty || barcodeNumber.isEmpty)
+                        .disabled(cardName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                                  manualBarcodeNumber.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
                     }
                 }
                 .sheet(isPresented: $isShowingScanner) {
-                    BarcodeScannerView(scannedCode: $barcodeNumber)
-                        .ignoresSafeArea()
-                        .overlay(alignment: .top) {
-                            Text("Tap the barcode on screen to scan")
-                                .padding()
-                                .background(.ultraThinMaterial)
-                                .cornerRadius(10)
-                                .padding()
-                        }
+                    ScannerSheetView(
+                        scannedValue: $scannedValue,
+                        scannedFormat: $scannedFormat,
+                        scanError: $scanError
+                    )
+                }
+                .alert("Scan Failed", isPresented: Binding(
+                    get: { scanError != nil },
+                    set: { if !$0 { scanError = nil } }
+                )) {
+                    Button("OK", role: .cancel) { scanError = nil }
+                } message: {
+                    Text(scanError ?? "")
                 }
                 .alert("New Category", isPresented: $isShowingNewCategoryAlert) {
                     TextField("Category Name", text: $newCategoryTitle)
@@ -100,10 +127,10 @@ struct AddCardView: View {
                                 title: newCategoryTitle,
                                 isSystem: false,
                                 colorHex: randomColors.randomElement() ?? "#007AFF",
-                                userOrder: maxOrder
+                                userOrder: maxOrder + 1
                             )
                             modelContext.insert(newCat)
-                            selectedCategory = newCat // Auto-select the newly created category
+                            selectedCategory = newCat
                             newCategoryTitle = ""
                         }
                     }
@@ -121,30 +148,99 @@ struct AddCardView: View {
     
     private func saveCard() {
         let cleanedName = cardName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        let cleanedBarcode = barcodeNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanedBarcode = manualBarcodeNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        
         
         if cleanedName.isEmpty {
             validationErrorMessage = "Please enter a name for this card."
             isShowingValidationError = true
+            return
         }
         
         if cleanedBarcode.isEmpty {
             validationErrorMessage = "Please enter or scan a barcode number."
             isShowingValidationError = true
+            return
         }
         
         let maxOrder = allCards.map { $0.userOrder }.max() ?? -1
+        guard let barcodeModel = BarcodeData(value: cleanedBarcode, format: selectedFormat)
+        else {
+            validationErrorMessage =
+                "The barcode is invalid for the selected format."
+            isShowingValidationError = true
+            return
+        }
         
         
         let newCard = ScannedCard(
             title: cardName,
             category: selectedCategory,
-            barcodeNumber: barcodeNumber,
-            barcodeFormat: "Code128",
+            barcode: barcodeModel,
             userOrder: maxOrder + 1
         )
         
         modelContext.insert(newCard)
         dismiss()
+    }
+}
+
+private struct ScannerSheetView: View {
+    @Binding var scannedValue: String
+    @Binding var scannedFormat: BarcodeFormat?
+    @Binding var scanError: String?
+ 
+    @State private var result: BarcodeData? = nil
+    @State private var error: String? = nil
+ 
+    var body: some View {
+        BarcodeScannerView(scannedResult: $result, scanError: $error)
+            .ignoresSafeArea()
+            .overlay(alignment: .top) {
+                Text("Tap the barcode on screen to scan")
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(10)
+                    .padding()
+            }
+            .onChange(of: result) { _, newValue in
+                if let newValue {
+                    scannedValue = newValue.value
+                    scannedFormat = newValue.format
+                }
+            }
+            .onChange(of: error) { _, newValue in
+                scanError = newValue
+            }
+    }
+}
+ 
+enum BarcodeValidator {
+    static func validate(
+        _ value: String,
+        format: BarcodeFormat
+    ) -> Bool {
+ 
+        switch format {
+ 
+        case .ean13:
+            return value.count == 13 &&
+                   value.allSatisfy(\.isNumber)
+ 
+        case .ean8:
+            return value.count == 8 &&
+                   value.allSatisfy(\.isNumber)
+ 
+        case .upce:
+            return value.count == 8 &&
+                   value.allSatisfy(\.isNumber)
+ 
+        case .itf14:
+            return value.count == 14 &&
+                   value.allSatisfy(\.isNumber)
+ 
+        default:
+            return !value.isEmpty
+        }
     }
 }
