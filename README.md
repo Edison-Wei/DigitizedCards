@@ -121,15 +121,6 @@ DigitizingCards/
 
 ```
 
-
----
-
-## Known Limitations
-
-- Barcode format is working for **Code 128**. Cards that use QR codes, PDF417 (e.g. some transit cards), or other formats will scan correctly but will always be displayed as Code 128.
-- No iCloud sync — data lives on-device only.
-- No card image capture — only the barcode number is stored.
-
 ---
 
 ## Developer
