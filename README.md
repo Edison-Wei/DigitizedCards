@@ -6,7 +6,7 @@
 
 ## What Does DigitizedCards Do
 
-DigitizedCards lets you scan the barcodes on your physical cards and store them digitally on your iPhone. When you're at the checkout or library desk, just open the app, find your card, and let staff scan the barcode right off your screen — no wallet required.
+DigitizedCards lets you scan the barcodes on your physical cards and store them digitally on your iPhone. When you're at the checkout or library desk, just open the app, find your card, and let staff scan the barcode right off your screen, no wallet required.
  
 Cards are organized into colour-coded categories (Library, Loyalty, Gym, Membership, ID, and any custom ones you create), with drag-and-drop reordering and full-text search across your entire collection.
 
@@ -81,7 +81,7 @@ Tap the **folder** icon (top-right) to open Category Management:
 - Tap **+** to create a new category
 ### Reordering
  
-- **Categories:** drag cards on the home screen — the order persists across launches
+- **Categories:** drag cards on the home screen, order persists across launches
 - **Cards:** open **All Cards** (list icon, top-left) and drag rows; reordering is disabled while search or a category filter is active
 
 ---
