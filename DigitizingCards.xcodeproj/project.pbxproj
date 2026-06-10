@@ -9,15 +9,17 @@
 /* Begin PBXBuildFile section */
 		BEE6424F2FD698B900246DA0 /* DigitizedCards.icon in Resources */ = {isa = PBXBuildFile; fileRef = BEE6424E2FD698B900246DA0 /* DigitizedCards.icon */; };
 		BEE642542FD7E93B00246DA0 /* RSBarcodes_Swift in Frameworks */ = {isa = PBXBuildFile; productRef = BEE642532FD7E93B00246DA0 /* RSBarcodes_Swift */; };
+		BEE642582FD7FA0A00246DA0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BEE642572FD7FA0700246DA0 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BE5768392FB593ED00C03B19 /* DigitizingCards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DigitizingCards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE6424E2FD698B900246DA0 /* DigitizedCards.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = DigitizedCards.icon; sourceTree = "<group>"; };
+		BEE642572FD7FA0700246DA0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BEE6424D2FD29E5800246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */ = {
+		BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -30,7 +32,7 @@
 		BE57683B2FB593ED00C03B19 /* DigitizingCards */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BEE6424D2FD29E5800246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */,
+				BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */,
 			);
 			path = DigitizingCards;
 			sourceTree = "<group>";
@@ -52,6 +54,7 @@
 		BE5768302FB593ED00C03B19 = {
 			isa = PBXGroup;
 			children = (
+				BEE642572FD7FA0700246DA0 /* PrivacyInfo.xcprivacy */,
 				BEE6424E2FD698B900246DA0 /* DigitizedCards.icon */,
 				BE57683B2FB593ED00C03B19 /* DigitizingCards */,
 				BE57683A2FB593ED00C03B19 /* Products */,
@@ -134,6 +137,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEE642582FD7FA0A00246DA0 /* PrivacyInfo.xcprivacy in Resources */,
 				BEE6424F2FD698B900246DA0 /* DigitizedCards.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
