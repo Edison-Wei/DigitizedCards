@@ -13,18 +13,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BE5768392FB593ED00C03B19 /* DigitizingCards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DigitizingCards.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE5768392FB593ED00C03B19 /* DigitizedCards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DigitizedCards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE6424E2FD698B900246DA0 /* DigitizedCards.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = DigitizedCards.icon; sourceTree = "<group>"; };
 		BEE642572FD7FA0700246DA0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */ = {
+		BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizedCards" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = BE5768382FB593ED00C03B19 /* DigitizingCards */;
+			target = BE5768382FB593ED00C03B19 /* DigitizedCards */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -32,7 +32,7 @@
 		BE57683B2FB593ED00C03B19 /* DigitizingCards */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizingCards" target */,
+				BEE6425D2FD7FF3F00246DA0 /* Exceptions for "DigitizingCards" folder in "DigitizedCards" target */,
 			);
 			path = DigitizingCards;
 			sourceTree = "<group>";
@@ -64,7 +64,7 @@
 		BE57683A2FB593ED00C03B19 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BE5768392FB593ED00C03B19 /* DigitizingCards.app */,
+				BE5768392FB593ED00C03B19 /* DigitizedCards.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,9 +72,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BE5768382FB593ED00C03B19 /* DigitizingCards */ = {
+		BE5768382FB593ED00C03B19 /* DigitizedCards */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BE5768442FB593EF00C03B19 /* Build configuration list for PBXNativeTarget "DigitizingCards" */;
+			buildConfigurationList = BE5768442FB593EF00C03B19 /* Build configuration list for PBXNativeTarget "DigitizedCards" */;
 			buildPhases = (
 				BE5768352FB593ED00C03B19 /* Sources */,
 				BE5768362FB593ED00C03B19 /* Frameworks */,
@@ -87,12 +87,12 @@
 			fileSystemSynchronizedGroups = (
 				BE57683B2FB593ED00C03B19 /* DigitizingCards */,
 			);
-			name = DigitizingCards;
+			name = DigitizedCards;
 			packageProductDependencies = (
 				BEE642532FD7E93B00246DA0 /* RSBarcodes_Swift */,
 			);
 			productName = DigitizingCards;
-			productReference = BE5768392FB593ED00C03B19 /* DigitizingCards.app */;
+			productReference = BE5768392FB593ED00C03B19 /* DigitizedCards.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -110,7 +110,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BE5768342FB593ED00C03B19 /* Build configuration list for PBXProject "DigitizingCards" */;
+			buildConfigurationList = BE5768342FB593ED00C03B19 /* Build configuration list for PBXProject "DigitizedCards" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -127,7 +127,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BE5768382FB593ED00C03B19 /* DigitizingCards */,
+				BE5768382FB593ED00C03B19 /* DigitizedCards */,
 			);
 		};
 /* End PBXProject section */
@@ -299,7 +299,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.edison.DigitizingCards;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -337,7 +337,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.edison.DigitizingCards;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -353,7 +353,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BE5768342FB593ED00C03B19 /* Build configuration list for PBXProject "DigitizingCards" */ = {
+		BE5768342FB593ED00C03B19 /* Build configuration list for PBXProject "DigitizedCards" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE5768422FB593EF00C03B19 /* Debug */,
@@ -362,7 +362,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BE5768442FB593EF00C03B19 /* Build configuration list for PBXNativeTarget "DigitizingCards" */ = {
+		BE5768442FB593EF00C03B19 /* Build configuration list for PBXNativeTarget "DigitizedCards" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE5768452FB593EF00C03B19 /* Debug */,

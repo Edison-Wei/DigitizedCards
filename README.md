@@ -8,7 +8,7 @@
 
 DigitizedCards lets you scan the barcodes on your physical cards and store them digitally on your iPhone. When you're at the checkout or library desk, just open the app, find your card, and let staff scan the barcode right off your screen, no wallet required.
  
-Cards are organized into colour-coded categories (Library, Loyalty, Gym, Membership, ID, and any custom ones you create), with drag-and-drop reordering and full-text search across your entire collection.
+Cards are organized into colour-coded categories (Library, Loyalty, Gym, Membership, ID, and any custom ones you create), with drag-and-drop reordering and card search.
 
 
 <img width="200" height="430" alt="Simulator Screenshot - 2026-06-09 at 00 06 19" src="https://github.com/user-attachments/assets/96e9df4a-a910-48a5-9fcb-e9f8b7e0b3fa" />
@@ -25,17 +25,15 @@ Cards are organized into colour-coded categories (Library, Loyalty, Gym, Members
 
 ## Features
 
-- **Multi-format barcode scanning** — uses the device camera via `DataScannerViewController` (VisionKit) and auto-detects the barcode type (QR, Aztec, DataMatrix, PDF417, Code 128, Code 39, Code 93, EAN-8, EAN-13, UPC-E, ITF-14)
-- **Multi-format barcode display** — rendered via [RSBarcodes_Swift](https://github.com/yeahdongcn/RSBarcodes_Swift), giving native support for all 11 formats; 2D codes display square, 1D codes display as wide strips
+- **Multi-format barcode scanning** — camera scanning via `DataScannerViewController` (VisionKit); auto-detects QR, Aztec, DataMatrix, PDF417, Code 128, Code 39, Code 93, EAN-8, EAN-13, UPC-E, and ITF-14
+- **Multi-format barcode display** — all 11 formats rendered natively by [RSBarcodes_Swift](https://github.com/yeahdongcn/RSBarcodes_Swift); 2D codes display square, 1D codes display as a wide strip
 - **Format-aware validation** — fixed-length formats (EAN-13, EAN-8, UPC-E, ITF-14) are validated for correct digit count before a card can be saved
-- **Manual format picker** — when adding a card manually, select the correct barcode format from a full picker covering all supported types
-- **Auto-brightness** — maximizes screen brightness when viewing a card and restores it when you leave or the app backgrounds
+- **Manual entry with format picker** — type a barcode number manually and select any of the 11 supported formats
 - **Category system** — five default categories seeded on first launch (Library, Loyalty / Rewards, Gym & Fitness, Membership, Identity / ID); create, rename, recolour, and delete your own
-- **Colour palette** — pick a category colour from an 18-swatch curated grid that flows through the whole UI (category cards, list accents, filter chips)
-- **Drag-to-reorder** — reorder categories via drag-and-drop on the home screen; reorder cards in the All Cards list
-- **Filter chips** — horizontal scrollable chip bar in All Cards to filter by category without leaving the view
-- **Search** — system-standard `searchable` across card name and barcode value
-- **SwiftData persistence** — all data is stored locally on-device; no account or network required
+- **Colour palette** — pick from an 18-swatch colour grid; the chosen colour flows through the entire UI (category cards, list accents, filter chips)
+- **Drag-to-reorder** — drag categories on the home screen and cards in the All Cards list; order persists across launches
+- **Filter chips** — horizontal scrollable chip bar to filter cards by category without leaving the list
+- **Privacy first** — No data collected, Stored locally on-device
 
 ---
 
@@ -43,10 +41,10 @@ Cards are organized into colour-coded categories (Library, Loyalty, Gym, Members
 
 | Requirement | Minimum |
 |---|---|
-| iOS | 17.0+ |
-| Xcode | 15.0+ |
-| Swift | 5.9+ |
-| Device | iPhone with camera (for scanning) |
+| iOS | 18.6+ |
+| Xcode | 16.0+ |
+| Swift | 6.0+ |
+| Device | iPhone with camera (physical device required for scanning) |
 
 ---
 
@@ -120,6 +118,14 @@ DigitizingCards/
     └── Color+Hex.swift                   # Color ↔ hex string helpers (init(hex:), toHex())
 
 ```
+
+---
+
+## Privacy
+ 
+DigitizingCards collects no data. Everything is stored locally on your device using SwiftData. No account, no network requests, no analytics.
+ 
+[Privacy Policy](https://gist.github.com/Edison-Wei/5d23c3f26e43cb39010e20d6c726db09)
 
 ---
 
